@@ -1,0 +1,299 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>marsRoverChallenge</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"/>
+    <style>
+        .form-inline { 
+            padding-top:10px;
+            padding-bottom:25px;
+        }
+        .block-cell { 
+            width: 30px;
+            height: 30px;
+            border-style: solid;
+            border-width: 1px;
+            border-color: #000;
+        }
+        .fill-cell { 
+            background-color: green;
+            width: 30px;
+            height: 30px; 
+        }
+        .rover {
+            padding-left: 6px;
+            padding-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <p></p>
+        <ul>
+            <li>Provide the initial starting point (x, y) and facing direction (N, S, E, W) of the rover.</li>
+            <li>The rover should receive a sequence of instructions via an array.</li>
+            <li>Implement commands that move the rover forward and backward (f, b) on the grid.</li>
+            <li>Implement commands that turn the rover left and right (l, r) on the grid.</li>
+        </ul>
+        <div id="status"></div>
+        <div id="input" class="form-inline">
+            <div class="row">
+                <label for="grid">Grid Size:</label>
+                <input id="gridX" type="text" class="form-control" maxlength="2" placeholder="Grid X Size">
+                <input id="gridY" type="text" class="form-control" maxlength="2" placeholder="Grid Y Size">
+            </div>
+            <div class="row">
+                <label for="location">Start Location:</label>
+                <input id="startX" type="text" class="form-control" maxlength="2" placeholder="Start X Location">
+                <input id="startY" type="text" class="form-control" maxlength="2" placeholder="Start Y Location">
+            </div>
+            <div class="row">
+                <label for="direction">Start Direction:</label>
+                <input id="startDirection" type="text" class="form-control" maxlength="1" placeholder="Direction(N,S,E,W)">
+            </div>
+            <div class="row">
+                <label for="command">Movement Commands:</label>
+                <input id="moveCommands" type="text" class="form-control" placeholder="Commands(F,B,L,R)">
+            </div>
+            <div class="row">
+                <button type="button" class="btn btn-success" id="start">Start</button>
+                <button type="button" class="btn btn-danger" id="reset">Reset</button>
+            </div>
+        </div>
+        <div id="userDirection" class="form-inline"></div>
+        <div id="content" class="form-inline"></div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" /></script>
+    <script>
+        $('#start').click(function () {
+            initGrid();
+            initStartingPosition();
+        });
+        $('#reset').click(function () {
+            resetRover();
+        });
+        $(document).ready(function () {
+            $('#gridX, #gridY, #startX, #startY, #startDirection, #moveCommands').keypress(function (e) {
+                if (e.keyCode == 32) {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        function resetRover() {
+            $('#gridX').val('');
+            $('#gridY').val('');
+            $('#startX').val('');
+            $('#startY').val('');
+            $('#startDirection').val('');
+            $('#moveCommands').val('');
+            $('#userDirection').val('');
+            $('#content').html('');
+        }
+        
+        function initStartingPosition() {
+            //
+            //get direction, starting position, and move commands
+            var direction = $('#startDirection').val().toUpperCase();
+            var startX = $('#startX').val();
+            var startY = $('#startY').val();
+            var moveCommands = $('#moveCommands').val().toUpperCase().split(',');
+            //console.log(moveCommands);
+            //
+            //set start position
+            var startXY = startX.toString() + startY.toString();
+            $('#' + startXY).html('<i class="rover glyphicon"></i>');
+            //
+            //start movement
+            startMovement(startXY, direction, moveCommands);
+        }
+
+        function startMovement(startXY, direction, commands) {
+            var currentXY = parseInt(startXY);
+            var lastXY = parseInt(startXY);
+            var directionImg = '';
+            var didMove = false;
+            //
+            //walk the commands
+            for (var i = 0; i < commands.length; i++) {
+                var command = commands[i];
+                //console.log(command);
+                switch (direction) {
+                    //
+                    //north
+                    case 'N':
+                        directionImg = 'glyphicon-arrow-up';
+                        switch (command) {
+                            //forward
+                            case 'F':
+                                didMove = true;
+                                currentXY += 10;
+                                break;
+                                //back
+                            case 'B':
+                                didMove = true;
+                                currentXY -= 10;
+                                break;
+                                //left
+                            case 'L':
+                                didMove = false;
+                                direction = 'W';
+                                directionImg = 'glyphicon-arrow-left';
+                                //currentXY += 1;
+                                break;
+                                //right
+                            case 'R':
+                                didMove = false;
+                                direction = 'E';
+                                directionImg = 'glyphicon-arrow-right';
+                                //currentXY -= 1;
+                                break;
+                        }
+                        break;
+                        //
+                        //south
+                    case 'S':
+                        directionImg = 'glyphicon-arrow-down';
+                        switch (command) {
+                            //forward
+                            case 'F':
+                                didMove = true;
+                                currentXY -= 10;
+                                break;
+                                //back
+                            case 'B':
+                                didMove = true;
+                                currentXY += 10;
+                                break;
+                                //left
+                            case 'L':
+                                didMove = false;
+                                direction = 'E';
+                                directionImg = 'glyphicon-arrow-right';
+                                //currentXY += 1;
+                                break;
+                                //right
+                            case 'R':
+                                didMove = false;
+                                direction = 'W'
+                                directionImg = 'glyphicon-arrow-left';
+                                //currentXY -= 1;
+                                break;
+                        }
+                        break;
+                        //
+                        //east
+                    case 'E':
+                        directionImg = 'glyphicon-arrow-right';
+                        switch (command) {
+                            //forward
+                            case 'F':
+                                didMove = true;
+                                currentXY += 1;
+                                break;
+                                //back
+                            case 'B':
+                                didMove = true;
+                                currentXY -= 1;
+                                break;
+                                //left
+                            case 'L':
+                                didMove = false;
+                                direction = 'N';
+                                directionImg = 'glyphicon-arrow-up';
+                                //currentXY += 10;
+                                break;
+                                //right
+                            case 'R':
+                                didMove = false;
+                                direction = 'S';
+                                directionImg = 'glyphicon-arrow-down';
+                                //currentXY -= 10;
+                                break;
+                        }
+                        break;
+                        //
+                        //west
+                    case 'W':
+                        directionImg = 'glyphicon-arrow-left';
+                        switch (command) {
+                            //forward
+                            case 'F':
+                                didMove = true;
+                                currentXY -= 1;
+                                break;
+                                //back
+                            case 'B':
+                                didMove = true;
+                                currentXY += 1;
+                                break;
+                                //left
+                            case 'L':
+                                didMove = false;
+                                direction = 'S';
+                                directionImg = 'glyphicon-arrow-down';
+                                //currentXY -= 10;
+                                break;
+                                //right
+                            case 'R':
+                                didMove = false;
+                                direction = 'N';
+                                directionImg = 'glyphicon-arrow-up';
+                                //currentXY += 10;
+                                break;
+                        }
+                        break;
+                }
+                //
+                //move rover to new location
+                $('#' + currentXY.toString()).html('<i class="rover glyphicon ' + directionImg + '"></i>');
+                //console.log(didMove, 'didMove');
+                //console.log(directionImg, 'directionImg');
+                //console.log(currentXY, 'currentXY');
+                //console.log(lastXY, 'lastXY');
+                //
+                //output user direction
+                $('#userDirection').html('<b>You are facing ' + direction.toString().toUpperCase() + '</b>');
+                //
+                //only traverse the grid if a f or b command is issued
+                if (didMove) {
+                    $('#' + lastXY.toString()).attr('class', 'block-cell fill-cell');
+                    $('#' + lastXY.toString()).html('');
+                    lastXY = currentXY;
+                }
+            }
+        }
+
+        function initGrid() {
+            //
+            //clear our any existing grid data
+            $('#content').html('');
+            //
+            //test for grid size
+            var gridX = parseInt($('#gridX').val());
+            var gridY = parseInt($('#gridY').val());
+            //
+            //build out grid
+            var $table = $('<table/>');
+            for (var i = 1; i <= gridY; i++) {
+                var $tr = $('<tr/>');
+                for (var j = 1; j <= gridX; j++) {
+                    var $wrap = $('<div/>');
+                    $wrap.attr('id', i.toString() + j.toString());
+                    $wrap.attr('class', 'block-cell');
+                    var $td = $('<td/>');
+                    $td.append($wrap);
+                    $tr.append($td);
+                }
+                $table.prepend($tr);
+            }
+            //
+            //draw out grid
+            $('#content').append($table);
+        }
+    </script>
+</body>
+</html>
