@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>marsRoverChallenge</title>
@@ -17,7 +17,7 @@
             border-color: #000;
         }
         .fill-cell { 
-            background-color: #339966;
+            background-color: green;
             width: 30px;
             height: 30px; 
         }
@@ -66,7 +66,7 @@
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" /></script>
     <script>
         $('#start').click(function () {
             initGrid();
@@ -80,6 +80,9 @@
                 if (e.keyCode == 32) {
                     e.preventDefault();
                 }
+                if (e.keyCode == 13) {
+                    $('#start').click();
+                }
             });
         });
 
@@ -90,7 +93,7 @@
             $('#startY').val('');
             $('#startDirection').val('');
             $('#moveCommands').val('');
-            $('#userDirection').val('');
+            $('#userDirection').html('');
             $('#content').html('');
         }
         
