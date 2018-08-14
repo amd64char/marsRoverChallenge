@@ -10,6 +10,6 @@ Requirements:<br/>
 • Implement commands that move the rover forward and backward (f, b) on the grid.<br/>
 • Implement commands that turn the rover left and right (l, r) on the grid.<br/>
 
-<a href="https://rawgit.com/amd64char/marsRoverChallenge/master/index.htm" target="_blank">View application in browser here!</a>
+<a href="https://rawgit.com/amd64char/marsRoverChallenge/master/index.htm" target="blank">View application in browser here!</a>
 
 
